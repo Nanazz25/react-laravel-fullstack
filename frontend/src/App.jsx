@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
+import Layout from './pages/Layout';
+import Home from './pages/Home';
+import Register from './pages/Auth/register';
+import Login from './pages/Auth/login';
+import { useContext } from 'react';
+import { AppContext } from './pages/Context/AppContext';
+import Create from './pages/post/create';
+import Show from './pages/post/Show';
+import Update from './pages/post/Update';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const {user} = useContext(AppContext);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path='/register' element={ user? <Home /> : <Register />} />
+          <Route path='/login' element={ user? <Home /> : <Login />} />
 
-export default App
+          <Route path='/create' element={ user? <Create /> : <Login />} />
+
+          <Route path='/post/:id' element={<Show />} />
+          <Route path='/post/update/:id' element={ user? <Update /> : <Login />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
